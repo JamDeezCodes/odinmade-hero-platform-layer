@@ -815,7 +815,7 @@ main :: proc() {
 
     last_counter := sdl.GetPerformanceCounter()
 
-    when ODIN_DEBUG && false {
+    when ODIN_DEBUG {
         debug_time_marker_index: int
         debug_time_markers := make([]Debug_Time_Marker, 30)
         defer delete(debug_time_markers)
@@ -1066,7 +1066,7 @@ main :: proc() {
                 game.get_sound_samples(&thread, &game_memory, &sound_buffer)
             }
 
-            when ODIN_DEBUG && false {
+            when ODIN_DEBUG {
                 marker := &debug_time_markers[debug_time_marker_index]
                 marker.output_play_cursor = play_cursor
                 marker.output_write_cursor = write_cursor
@@ -1075,7 +1075,7 @@ main :: proc() {
                 marker.expected_flip_play_cursor = expected_frame_boundary_byte
             }
 
-            when ODIN_DEBUG && false {
+            when ODIN_DEBUG {
                 unwrapped_write_cursor := write_cursor
 
                 if unwrapped_write_cursor < play_cursor {
@@ -1126,7 +1126,7 @@ main :: proc() {
 
         end_counter := sdl.GetPerformanceCounter()
 
-        when ODIN_DEBUG && false {
+        when ODIN_DEBUG {
             current_marker: ^Debug_Time_Marker
             if debug_time_marker_index > 0 {
                 current_marker = &debug_time_markers[debug_time_marker_index - 1]
@@ -1145,7 +1145,7 @@ main :: proc() {
 
         flip_wall_clock = sdl.GetPerformanceCounter()
 
-        when ODIN_DEBUG && false {
+        when ODIN_DEBUG {
             sdl.LockAudioDevice(audio_device_id)
             defer sdl.UnlockAudioDevice(audio_device_id)
 
@@ -1169,7 +1169,7 @@ main :: proc() {
 
         end_cycle_count := intrinsics.read_cycle_counter()
 
-        when ODIN_DEBUG && false {
+        when ODIN_DEBUG {
             ms_per_frame := 1000 * get_seconds_elapsed(last_counter, end_counter)
 
             counter_elapsed := end_counter - last_counter
