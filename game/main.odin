@@ -52,28 +52,25 @@ Button_State :: struct {
     ended_down: bool,
 }
 
+Buttons :: enum {
+    Move_Up,
+    Move_Down,
+    Move_Left,
+    Move_Right,
+    Action_Up,
+    Action_Down,
+    Action_Left,
+    Action_Right,
+    Left_Shoulder,
+    Right_Shoulder,
+    Start,
+    Back,
+}
+
 Controller_Input :: struct {
     is_connected, is_analog: bool,
     stick_average_x, stick_average_y: f32,
-    using _: struct #raw_union {
-        buttons: [MAX_BUTTONS]Button_State,
-        using _: struct {
-            move_up: Button_State,
-            move_down: Button_State,
-            move_left: Button_State,
-            move_right: Button_State,
-            action_up: Button_State,
-            action_down: Button_State,
-            action_left: Button_State,
-            action_right: Button_State,
-            left_shoulder: Button_State,
-            right_shoulder: Button_State,
-            start: Button_State,
-            // NOTE: The back button is our "terminator" button,
-            // do not add more buttons below it
-            back: Button_State,
-        },
-    },
+    buttons: [Buttons]Button_State,
 }
 
 Input :: struct {
@@ -145,7 +142,6 @@ draw_rectangle :: proc(buffer: ^Frame_Buffer,
 
 @(export)
 game_update_and_render :: proc(thread: ^Thread_Context, memory: ^Memory, input: ^Input, frame_buffer: ^Frame_Buffer) {
-    assert(&input.controllers[0].buttons[MAX_BUTTONS - 1] == &input.controllers[0].back)
     assert(size_of(State) <= memory.permanent_storage_size)
 
     game_state := (^State)(raw_data(memory.permanent_storage))

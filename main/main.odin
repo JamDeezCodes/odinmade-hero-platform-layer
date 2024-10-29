@@ -353,29 +353,29 @@ handle_event :: proc(state: ^State, event: ^sdl.Event, keyboard_controller: ^g.C
         if event.key.repeat == 0 {
             #partial switch key_code {
             case .W:
-                process_keyboard_message(&keyboard_controller.move_up, is_down)
+                process_keyboard_message(&keyboard_controller.buttons[.Move_Up], is_down)
             case .A:
-                process_keyboard_message(&keyboard_controller.move_left, is_down)
+                process_keyboard_message(&keyboard_controller.buttons[.Move_Left], is_down)
             case .S:
-                process_keyboard_message(&keyboard_controller.move_down, is_down)
+                process_keyboard_message(&keyboard_controller.buttons[.Move_Down], is_down)
             case .D:
-                process_keyboard_message(&keyboard_controller.move_right, is_down)
+                process_keyboard_message(&keyboard_controller.buttons[.Move_Right], is_down)
             case .Q:
-                process_keyboard_message(&keyboard_controller.left_shoulder, is_down)
+                process_keyboard_message(&keyboard_controller.buttons[.Left_Shoulder], is_down)
             case .E:
-                process_keyboard_message(&keyboard_controller.right_shoulder, is_down)
+                process_keyboard_message(&keyboard_controller.buttons[.Right_Shoulder], is_down)
             case .UP:
-                process_keyboard_message(&keyboard_controller.action_up, is_down)
+                process_keyboard_message(&keyboard_controller.buttons[.Action_Up], is_down)
             case .LEFT:
-                process_keyboard_message(&keyboard_controller.action_left, is_down)
+                process_keyboard_message(&keyboard_controller.buttons[.Action_Left], is_down)
             case .DOWN:
-                process_keyboard_message(&keyboard_controller.action_down, is_down)
+                process_keyboard_message(&keyboard_controller.buttons[.Action_Down], is_down)
             case .RIGHT:
-                process_keyboard_message(&keyboard_controller.action_right, is_down)
+                process_keyboard_message(&keyboard_controller.buttons[.Action_Right], is_down)
             case .ESCAPE:
-                process_keyboard_message(&keyboard_controller.start, is_down)
+                process_keyboard_message(&keyboard_controller.buttons[.Start], is_down)
             case .SPACE:
-                process_keyboard_message(&keyboard_controller.back, is_down)
+                process_keyboard_message(&keyboard_controller.buttons[.Back], is_down)
             case .P:
                 when ODIN_DEBUG {
                     if is_down {
@@ -919,34 +919,46 @@ main :: proc() {
                 }
 
                 threshold: f32 = 0.5
-                process_controller_button(&old_controller.move_left, &new_controller.move_left,
+                process_controller_button(&old_controller.buttons[.Move_Left],
+                                          &new_controller.buttons[.Move_Left],
                                           new_controller.stick_average_x < -threshold)
-                process_controller_button(&old_controller.move_right, &new_controller.move_right,
+                process_controller_button(&old_controller.buttons[.Move_Right],
+                                          &new_controller.buttons[.Move_Right],
                                           new_controller.stick_average_x > threshold)
-                process_controller_button(&old_controller.move_down, &new_controller.move_down,
+                process_controller_button(&old_controller.buttons[.Move_Down],
+                                          &new_controller.buttons[.Move_Down],
                                           new_controller.stick_average_y < -threshold)
-                process_controller_button(&old_controller.move_up, &new_controller.move_up,
+                process_controller_button(&old_controller.buttons[.Move_Up],
+                                          &new_controller.buttons[.Move_Up],
                                           new_controller.stick_average_y > threshold)
 
-                process_controller_button(&old_controller.action_down, &new_controller.action_down,
+                process_controller_button(&old_controller.buttons[.Action_Down],
+                                          &new_controller.buttons[.Action_Down],
                                           sdl.GameControllerGetButton(controller, .A) > 0)
-                process_controller_button(&old_controller.action_left, &new_controller.action_left,
+                process_controller_button(&old_controller.buttons[.Action_Left],
+                                          &new_controller.buttons[.Action_Left],
                                           sdl.GameControllerGetButton(controller, .B) > 0)
-                process_controller_button(&old_controller.action_right, &new_controller.action_right,
+                process_controller_button(&old_controller.buttons[.Action_Right],
+                                          &new_controller.buttons[.Action_Right],
                                           sdl.GameControllerGetButton(controller, .X) > 0)
-                process_controller_button(&old_controller.action_up, &new_controller.action_up,
+                process_controller_button(&old_controller.buttons[.Action_Up],
+                                          &new_controller.buttons[.Action_Up],
                                           sdl.GameControllerGetButton(controller, .Y) > 0)
-                process_controller_button(&old_controller.left_shoulder, &new_controller.left_shoulder,
+                process_controller_button(&old_controller.buttons[.Left_Shoulder],
+                                          &new_controller.buttons[.Left_Shoulder],
                                           sdl.GameControllerGetButton(controller, .LEFTSHOULDER) > 0)
-                process_controller_button(&old_controller.right_shoulder, &new_controller.right_shoulder,
+                process_controller_button(&old_controller.buttons[.Right_Shoulder],
+                                          &new_controller.buttons[.Right_Shoulder],
                                           sdl.GameControllerGetButton(controller, .RIGHTSHOULDER) > 0)
-                process_controller_button(&old_controller.start, &new_controller.start,
+                process_controller_button(&old_controller.buttons[.Start],
+                                          &new_controller.buttons[.Start],
                                           sdl.GameControllerGetButton(controller, .START) > 0)
-                process_controller_button(&old_controller.back, &new_controller.back,
+                process_controller_button(&old_controller.buttons[.Back],
+                                          &new_controller.buttons[.Back],
                                           sdl.GameControllerGetButton(controller, .BACK) > 0)
 
                 // TODO: Make haptics platform independent
-                b_button := new_controller.action_left.ended_down
+                b_button := new_controller.buttons[.Action_Left].ended_down
                 if b_button {
                     if rumble_handles[index] != nil {
                         sdl.HapticRumblePlay(rumble_handles[index], 0.5, 2000)
