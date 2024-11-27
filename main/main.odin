@@ -782,9 +782,9 @@ main :: proc() {
 
     state.total_size = game_memory.permanent_storage_size + game_memory.transient_storage_size
     state.game_memory_block = make([]byte, state.total_size)
-    game_memory.permanent_storage = state.game_memory_block
-    game_memory.transient_storage = game_memory.permanent_storage[game_memory.permanent_storage_size:]
-    defer delete(game_memory.permanent_storage)
+    game_memory.permanent_storage = state.game_memory_block[:game_memory.permanent_storage_size]
+    game_memory.transient_storage = state.game_memory_block[game_memory.permanent_storage_size:]
+    defer delete(state.game_memory_block)
 
     /*
        NOTE: Rather than doing memory mapped files for the replay buffer, we simply
@@ -937,10 +937,10 @@ main :: proc() {
                                           sdl.GameControllerGetButton(controller, .A) > 0)
                 process_controller_button(&old_controller.buttons[.Action_Left],
                                           &new_controller.buttons[.Action_Left],
-                                          sdl.GameControllerGetButton(controller, .B) > 0)
+                                          sdl.GameControllerGetButton(controller, .X) > 0)
                 process_controller_button(&old_controller.buttons[.Action_Right],
                                           &new_controller.buttons[.Action_Right],
-                                          sdl.GameControllerGetButton(controller, .X) > 0)
+                                          sdl.GameControllerGetButton(controller, .B) > 0)
                 process_controller_button(&old_controller.buttons[.Action_Up],
                                           &new_controller.buttons[.Action_Up],
                                           sdl.GameControllerGetButton(controller, .Y) > 0)
